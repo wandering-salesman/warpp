@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Remote Pair Programming Platform</title>
+    <script src="plugin/codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="plugin/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="plugin/codemirror/theme/monokai.css">
+    <script src="plugin/codemirror/mode/javascript/javascript.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet"  href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+
+<body>   
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Pair-Programming</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMarkup" aria-controls="navbarMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarMarkup">
+          <div class="navbar-nav">
+            <button class="btn"><a class="login-btn" href="/login">Login</a></button>
+          </div>
+          <div class="profile-img-container">
+            <img class="profile-img" src="" />
+          </div>
+        </div>
+      </nav>
+
+  <div class="">  
+    <div class="flex-container">
+        <!--  -->
+        <div class="code-area">
+            <textarea id="code"></textarea>
+            
+            <div data-simplebar class="terminal-container" >
+              <textarea  id="code-output" type="text">Output: 
+              >   </textarea>
+            </div>
+        </div>
+        
+        <!--Right bar nav links-->
+        <div class="file-structure">
+          <nav>
+            <div class="nav nav-tabs control-icons" id="nav-tab" role="tablist">
+              <a class="nav-item nav-link active show" id="nav-setting-tab" data-toggle="tab" href="#nav-setting" role="tab" aria-controls="nav-setting-tab" aria-selected="false">
+                 <img alt="setting" title="settings" src="./images/settingIcon.png"/>
+              </a>
+              <a class="nav-item nav-link" id="nav-share-tab" data-toggle="tab" href="#nav-share" role="tab" aria-controls="nav-share-tab" aria-selected="true">
+                <img alt="setting" title="share settings" src="./images/shareIcon.png"/>
+             </a>
+              <a class="nav-item nav-link" id="nav-chat-tab" data-toggle="tab" href="#nav-chat" role="tab" aria-controls="nav-chat-tab" aria-selected="false">
+                <img alt="chat" title="chat" src="./images/chatIcon.png"/>
+              </a>
+              <a class="nav-item nav-link" id="nav-avchat-tab" data-toggle="tab" href="#nav-avchat" role="tab" aria-controls="nav-avchat-tab" aria-selected="false">
+                <img alt="audio/video chat" title="audio/video chat" src="./images/videoIcon.png"/>
+              </a>
+            </div>
+          </nav>
+          <div class="tab-content" id="nav-tabContent">
+
+            <div class="tab-pane fade show active" id="nav-setting" role="tabpanel" aria-labelledby="nav-setting-tab">
+              <form class="select-lang form-inline">
+                
+                <label class="my-1 mr-2" for="lang-option">Programming Language</label>
+                <select class="custom-select my-1 mr-sm-2 mb-3" id="lang-option">
+                  <option value="c">C</option>
+                  <option value="cpp">C++</option>
+                  <option value="python">Python</option>
+                </select>
+
+                <label for="code-input">Input</label>
+                <textarea class="form-control" id="code-input" col="20" row="10"></textarea>
+                
+                <button type="button" class="btn btn-success btn-lg btn-block" id="compile-run"> 
+                  Compile and Run <span class="load-icon hide"></span>
+                </button>
+              </form>
+            </div>
+
+            <div class="tab-pane fade " id="nav-share" role="tabpanel" aria-labelledby="nav-share-tab">
+              <form>
+                <button class="btn g-link">Generate Link</button>
+                <div class="form-group">
+                  <label class="sr-only" for="share-link">Share Link</label>
+                  <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="share-link" placeholder="sharable link">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">Copy</div>
+                    </div>
+                  </div>
+                </div>
+                    <button type="button" id="delete-repo" class="btn btn-danger mr-2">Delete Repo</button>
+                    <button type="button" id="save-repo" class="btn btn-success">Save & Exit</button>
+              </form>
+            </div>
+
+            <div class="tab-pane fade" id="nav-chat" role="tabpanel" aria-labelledby="nav-chat-tab">
+              <div class="page-content page-container" id="page-content">
+                    <div class="d-flex justify-content-center">
+                        <div class="chat-container-inner">
+                            <div class="card card-bordered">
+                                <div class="ps-container ps-theme-default ps-active-y" data-simplebar id="chat-content">
+                                  <div id="chat-content-inner">
+                                    <div class="media media-chat">
+                                        <div class="media-body">
+                                            <p>Hey</p>
+                                            <p>You can send and recieve chat messages here..</p>
+                                            <p class="meta"><time datetime="2018">23:58</time></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="media media-chat">
+                                      <div class="media-body">
+                                          <p>Hey</p>
+                                          <p>You can send and recieve chat messages here..</p>
+                                          <p class="meta"><time datetime="2018">23:58</time></p>
+                                      </div>
+                                  </div>
+
+                                  <div class="media media-chat">
+                                    <div class="media-body">
+                                        <p>Hey</p>
+                                        <p>You can send and recieve chat messages here..</p>
+                                        <p class="meta"><time datetime="2018">23:58</time></p>
+                                    </div>
+                                </div>
+
+                                <div class="media media-chat">
+                                  <div class="media-body">
+                                      <p>Hey</p>
+                                      <p>You can send and recieve chat messages here..</p>
+                                      <p class="meta"><time datetime="2018">23:58</time></p>
+                                  </div>
+                              </div>
+
+                                  
+
+                              <div class="media media-chat">
+                                <div class="media-body">
+                                    <p>Hey</p>
+                                    <p>You can send and recieve chat messages here..</p>
+                                    <p class="meta"><time datetime="2018">23:58</time></p>
+                                </div>
+                            </div>
+                                  </div>
+                                    
+                                    <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+                                        <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+                                    </div>
+                                    <div class="ps-scrollbar-y-rail" style="top: 0px; height: 0px; right: 2px;">
+                                        <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 2px;"></div>
+                                    </div>
+                                </div>
+                                <div class="publisher bt-1 border-light"> 
+                                   <input class="publisher-input" id="text-msg" type="text" placeholder="Write your message">  
+                                     <a class="publisher-btn text-info" href="#" data-abc="true"><span class="paper-plane-icon"></span></a> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            </div>
+            <div class="tab-pane fade" id="nav-avchat" role="tabpanel" aria-labelledby="nav-avchat-tab">
+              <button class="btn btn-primary" id="video-init">Answer</button>
+              <button class="btn btn-success" id="video-connect">Connect</button>
+              <div class="video-call-progress hide">
+                <img src="./images/callLoadingIcon.gif">
+                <p id="call-status">Calling.......</p>
+              </div>
+              <video id="peer-video"></video> 
+              <button class="btn btn-danger hide" id="video-disconnect">Disonnect</button>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+       
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="plugin/codemirror/mode/python/python.js"></script>
+    <script src="plugin/codemirror/mode/clike/clike.js"></script>
+    <script src="js/socketClient.js"></script>
+    <script src="js/simplepeer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
+    <script src="js/main.js"> </script>
+</body>
+</html>
