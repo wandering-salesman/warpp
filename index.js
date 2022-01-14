@@ -4,7 +4,6 @@ const http = require('http');
 const passport = require('passport');
 const expressSession = require('express-session')
 const connectDB = require('./connectDB');
-// const githubAuth = require('./routes/github-auth-routes');
 const googleAuth = require('./routes/google-auth-routes');
 const bodyParser = require('body-parser');
 const User = require("./models/user");
@@ -25,6 +24,7 @@ server.listen(PORT, ()=> {
   .then( ()=> console.log("DB connected successfully"))
   .catch( (e)=> console.error("Error in connecting DB "+e))
 })
+
 
 // Middleware functions-------------------------------------------------
 
@@ -79,7 +79,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // use auth routes
-// app.use(githubAuth);
 app.use(googleAuth);
 
 // generic routes

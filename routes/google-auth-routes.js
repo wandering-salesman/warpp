@@ -9,7 +9,6 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_SECRET_ID,
     callbackURL: "http://localhost:4001/auth/google/callback"
-    // callbackURL: 'https://remote-pair-programming.herokuapp.com/auth/google/callback'
   },
   function(accessToken, refreshToken, profile, done) {
     if (profile) {
